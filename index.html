@@ -4,6 +4,29 @@
 <head>
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 <meta charset="utf-8" />
+<script id="fragmentShader" type="x-shader/x-fragment">
+	varying vec2 vUv;
+	uniform sampler2D rRacurs;
+	uniform sampler2D lRacurs;
+	uniform float height;
+	void main() {
+		//odd from left racurs, even from right
+		float d = mod((floor(height*(vUv.y+1.0))),2.0); //odd or even, height - is new uniform to get viewport height
+		if(d > 0.1) {
+			gl_FragColor = texture2D( rRacurs, vUv );
+		} else {
+			gl_FragColor = texture2D( lRacurs, vUv );
+		}
+	}
+</script>
+
+<script id="vertexShader" type="x-shader/x-vertex">
+	varying vec2 vUv;
+	void main() {
+		vUv = uv;
+		gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+	}
+</script>
 </head>
 
 <body style="min-height: 800px;  height: 800px; overflow: hidden;">
@@ -11,6 +34,7 @@
         Use arrows to move, Ctrl to shoot <br/>
         Space to open doors, Shift to jump <br/>
         <span id='info' style='color:#F0C'></span>
+		<input type="checkbox" id="3D" value="true">3D
       </div>
       <div id="gameCount" style="position: absolute; top: 20px; min-height: 20px; padding: 10px; margin-bottom: 20px; background-color: #ccc6; border: 1px solid #e3e3e3; left:90%; color: #fff;">
  		Count - 0

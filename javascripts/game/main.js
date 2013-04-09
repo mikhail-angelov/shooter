@@ -5,6 +5,7 @@
 //good sample: http://mroushey.com/SIS3DIIJS/03/
 //some ideas: http://www.isaacsukin.com/news/2012/06/how-build-first-person-shooter-browser-threejs-and-webglhtml5-canvas
 //very good resource: http://www.webgl.com
+//several passes for rendering http://mrdoob.github.io/three.js/examples/webgl_rtt.html
 
  var mmap = [[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,2,2,1,1,1,2,2,2,1,1,2],[2,1,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,3,1,1,1,2,2,1,1,1,1,1,2,1,1,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,2,1,1,1,2,2,1,1,1,2,1,2,1,1,2],[2,1,1,2,1,1,2,2,2,2,2,2,1,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,1,2,1,2,1,1,2],[2,1,2,2,1,2,2,1,2,1,2,2,2,2,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,1,2,1,1,1,1,2],[2,1,2,2,1,2,1,1,1,1,1,1,1,2,1,1,1,1,1,2,2,2,1,2,2,2,2,2,2,2,2,1,1,1,1,2],[2,1,2,2,1,2,1,1,1,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,1,2,1,2,1,1,1,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,2,1,2,1,2,2,2,2,1,2,2,2,2,2,2,2,3,2,2,2,2,1,2,2,2,2,2,2,2,2,1,1,1,1,2],[2,2,1,2,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1,1,2],[2,1,1,2,1,1,1,1,2,1,2,2,2,2,2,1,1,1,1,2,2,1,1,1,1,1,2,1,1,1,1,1,1,1,1,2],[2,2,1,2,2,2,2,2,2,1,2,2,2,2,2,1,1,1,1,2,2,1,1,1,1,1,2,1,1,1,1,1,1,1,1,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,2,2,1,1,1,1,2],[2,2,2,2,1,2,2,2,2,1,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,2,2,1,1,1,1,2],[2,1,1,2,1,2,1,2,2,1,2,2,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,1,2],[2,1,2,2,1,2,1,2,1,1,1,1,1,2,2,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,2,2,1,2],[2,1,1,2,1,1,1,2,1,1,1,1,1,2,2,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1,1,2],[2,1,1,2,1,2,1,2,1,1,1,1,1,1,3,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1,1,2],[2,1,1,2,1,2,1,2,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,2],[2,1,1,2,1,2,1,2,1,1,1,1,1,2,2,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1,1,2],[2,1,1,2,1,2,1,2,2,2,1,2,2,2,2,2,2,2,1,2,2,2,1,1,1,1,1,1,1,1,1,1,2,1,1,2],[2,1,1,1,1,2,1,1,1,2,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,2,1,1,2],[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]];
 
@@ -15,7 +16,14 @@ var camera, scene, world, renderer, controller, particleController;
 var stats;
 var jump_timer, jump_delta;
 
+//stereo
+var cameraORT, sceneORT;
+var rtTexture, ltTexture, materialScreen;
+var is3D = false;
+
 init();
+initORTscene();
+
 mainLoop();
 
 function init() {
@@ -56,7 +64,14 @@ function init() {
 function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
+<<<<<<< HEAD
 	renderer.setSize( window.innerWidth, window.innerHeight );
+=======
+	cameraORT.aspect = window.innerWidth / window.innerHeight;
+	cameraORT.updateProjectionMatrix();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	materialScreen.uniforms.height = window.innerHeight;
+>>>>>>> master
 	console.log(window.innerWidth + ' --- '+ window.innerHeight );
 }
 
@@ -71,7 +86,28 @@ function mainLoop() {
 function renderMe() {
 	controller.update();
 
-	renderer.render( scene, camera );
+	if(is3D == false) {
+		renderer.render( scene, camera );
+	} else {
+		//stereo
+		
+		// Render into textures
+		renderer.render( scene, camera, rtTexture, true );
+		var x = camera.position.x;
+		var z = camera.position.z;
+		var faceWidth = 7; //dummy value
+
+		camera.position.x -= faceWidth * Math.sin(camera.rotation.y);
+		camera.position.z -= faceWidth * Math.cos(camera.rotation.y);
+		
+		renderer.render( scene, camera, ltTexture, true );
+		//restore
+		camera.position.x = x;
+		camera.position.z = z;
+		
+		// Render to screen quad with generated texture
+		renderer.render( sceneORT, cameraORT);
+	}
 }
 
 function get_map_position(position) {
@@ -135,3 +171,28 @@ function jump() {
 		}
 	},10);
 }
+
+
+function initORTscene() {
+	//projection to screen
+	sceneORT = new THREE.Scene();
+	cameraORT = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -10000, 10000 );
+	rtTexture = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } );
+	ltTexture = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } );
+
+	materialScreen = new THREE.ShaderMaterial( {
+		uniforms: { lRacurs: { type: "t", value: ltTexture }, rRacurs: { type: "t", value: rtTexture }, height: { type: "f", value: window.innerHeight } },
+		vertexShader: document.getElementById( 'vertexShader' ).textContent,
+		fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+		depthWrite: false
+	} );
+	
+	var plane = new THREE.PlaneGeometry( window.innerWidth, window.innerHeight );
+	var mesh = new THREE.Mesh( plane, materialScreen );
+	mesh.position.z = -1; //a little behind
+	sceneORT.add( mesh );
+	
+	//checkbox handler to turn 3D
+	document.getElementById("3D").onchange = function(){ is3D = document.getElementById("3D").checked;};
+}
+
