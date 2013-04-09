@@ -18,7 +18,7 @@ var jump_timer, jump_delta;
 //stereo
 var cameraORT, sceneORT;
 var rtTexture, ltTexture, materialScreen;
-var is3D = true;
+var is3D = false;
 
 init();
 initORTscene();
@@ -80,7 +80,7 @@ function mainLoop() {
 function renderMe() {
 	controller.update();
 
-	if(!is3D) {
+	if(is3D == false) {
 		renderer.render( scene, camera );
 	} else {
 		//stereo
@@ -89,7 +89,7 @@ function renderMe() {
 		renderer.render( scene, camera, rtTexture, true );
 		var x = camera.position.x;
 		var z = camera.position.z;
-		var faceWidth = 10;
+		var faceWidth = 7; //dummy value
 
 		camera.position.x -= faceWidth * Math.sin(camera.rotation.y);
 		camera.position.z -= faceWidth * Math.cos(camera.rotation.y);
