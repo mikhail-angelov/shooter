@@ -64,14 +64,10 @@ function init() {
 function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
-<<<<<<< HEAD
-	renderer.setSize( window.innerWidth, window.innerHeight );
-=======
 	cameraORT.aspect = window.innerWidth / window.innerHeight;
 	cameraORT.updateProjectionMatrix();
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	materialScreen.uniforms.height = window.innerHeight;
->>>>>>> master
 	console.log(window.innerWidth + ' --- '+ window.innerHeight );
 }
 
