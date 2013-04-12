@@ -44,6 +44,7 @@ function init() {
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	renderer.setClearColorHex(0xEEEEEE, 1.0);
+	renderer.shadowMapCullFrontFaces = false;
 	renderer.clear();
 
 	stats = new Stats();
