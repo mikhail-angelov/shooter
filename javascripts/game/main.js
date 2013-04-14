@@ -46,6 +46,7 @@ function init() {
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	renderer.setClearColorHex(0xEEEEEE, 1.0);
+	renderer.shadowMapCullFrontFaces = false;
 	renderer.clear();
 
 	stats = new Stats();
@@ -168,7 +169,6 @@ function jump() {
 	},10);
 }
 
-
 function initORTscene() {
 	//projection to screen
 	sceneORT = new THREE.Scene();
@@ -191,4 +191,3 @@ function initORTscene() {
 	//checkbox handler to turn 3D
 	document.getElementById("3D").onchange = function(){ is3D = document.getElementById("3D").checked;};
 }
-

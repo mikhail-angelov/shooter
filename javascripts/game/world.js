@@ -62,8 +62,13 @@ world.prototype.init = function(scene){
 
 
 	//add lights
-	var ambientLight = new THREE.AmbientLight(0xf0ff3f);
+	var ambientLight = new THREE.AmbientLight(0xfff);
 	scene.add(ambientLight);
+
+	var directionalLight = new THREE.DirectionalLight( 0xffffff );
+	directionalLight.position.set( 10, 1000, 10 ).normalize();
+	scene.add( directionalLight );
+
 	//add some fog
 	//scene.fog = new THREE.Fog( 0xddddff, 0, 750 );
 }

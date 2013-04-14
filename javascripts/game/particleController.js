@@ -55,8 +55,7 @@ ParticleController.prototype.checkForCollide = function() {
 		if(particle instanceof Person) {
 			for (var j = 0; j < this.particles.length; j++) {
 				if(this.particles[j] instanceof Bullet){
-					if(particle.position.distanceTo(this.particles[j].position) <= 
-						particle.size + this.particles[j].size){
+					if(particle.position.distanceTo(this.particles[j].position) <= particle.size + this.particles[j].size){
 						this.particles[j].alive = false; //todo exploid bullet here
 						this.add(particle.hit());
 
@@ -95,7 +94,6 @@ ParticleController.prototype.addPerson = function(x_position, y_position){
     var person_position = new THREE.Vector3();
     person_position.x = x * this.map_scale;
     person_position.z = y * this.map_scale;
-    person_position.y = 35;
-    var person = new Person(person_position);
-    this.add(person);
+    person_position.y = 5;
+    var person = new Person(person_position, this); //person will add themself
 }
