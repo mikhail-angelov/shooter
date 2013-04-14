@@ -65,9 +65,9 @@ controller.prototype.update = function(delta) {
 	    new_position = this.position_probe(position, zond, new_position);
 
 		if (this.keys.left) {
-			direction += 0.05;
+			direction += 0.03;
 		} else if (this.keys.right) {
-			direction -= 0.05;
+			direction -= 0.03;
 		};
 
 		this.camera.rotation.y = direction;
