@@ -20,7 +20,6 @@ function Person(position, cb){
 		//error
 		console.log("cannot load model for Person");
 	}
-
 }
 
 Person.prototype = Object.create(Particle.prototype);
@@ -97,5 +96,4 @@ loadModel = function(){
 	loader.load( "images/male02/Male02_dds.js", callbackMale );
 	//loader.load( "images/female02/Female02_slim.js", callbackFemale );
 }
-
 
