@@ -15,6 +15,7 @@ const mmap_scale = 100;
 var camera, scene, world, renderer, controller, particleController;
 var stats;
 var jump_timer, jump_delta;
+
 //stereo
 var cameraORT, sceneORT;
 var rtTexture, ltTexture, materialScreen;
@@ -22,6 +23,7 @@ var is3D = false;
 
 init();
 initORTscene();
+
 mainLoop();
 
 function init() {
